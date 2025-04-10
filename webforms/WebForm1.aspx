@@ -11,13 +11,22 @@
    
     <form id="form1" runat="server">
         <div>
+
+        <input type="text" name="telefone" id="telefone" runat="server" />
+            <asp:TextBox ID="txtMensagem" runat="server" OnTextChanged="txtMensagem_TextChanged"></asp:TextBox>
+
+            <asp:Button ID="Button1" runat="server" Text="Mostrar mensagem" OnClick="Button1_Click" />
         </div>
-        <asp:TextBox ID="txtMensagem" runat="server" OnTextChanged="txtMensagem_TextChanged"></asp:TextBox>
+        <br>
+        <br>
+        <br>
+        <asp:DropDownList ID="DropDownList1" runat="server" OnSelectedIndexChanged="DropDownList1_SelectedIndexChanged"></asp:DropDownList>
+        <br>
+        <br />
+        <br>
+        <br>
+        <asp:GridView ID="GridView1" runat="server"></asp:GridView>
+        </form>
 
-        &nbsp;<asp:Button ID="Button1" runat="server" Text="Mostrar mensagem" OnClick="Button1_Click" />
-    </form>
-    <p>
-
-        <input type="text" name="telefone" id="telefone" runat="server" /></p>
 </body>
 </html> 

@@ -5,11 +5,11 @@ namespace webforms
 {
     public partial class WebForm1 : System.Web.UI.Page
     {
-        public List<Usuario> nomes = new List<Usuario>();
+        public List<global::Usuario> nomes = new List<global::Usuario>();
         protected void Page_Load(object sender, EventArgs e)
         {
-            nomes.Add(new Usuario() { Nome = "Marcos", Id = 1 });
-            nomes.Add(new Usuario() { Nome = "Aline", Id = 2 });
+            nomes.Add(new global::Usuario() { Nome = "Marcos", Id = 1 });
+            nomes.Add(new global::Usuario() { Nome = "Aline", Id = 2 });
 
             PreencheDropDownList();
             PreencheGridView();

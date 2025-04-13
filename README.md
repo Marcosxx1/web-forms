@@ -7,7 +7,15 @@ Este projeto é um exemplo simples de uma aplicação ASP.NET WebForms
 - [ Conceitos Demonstrados](#-conceitos-demonstrados)
 - [ Componentes HTML](#componentes-html)
 - [ Componentes C#](#componentes-c)
+- [ Cadastro em memória](#cadastro-em-memória)
+    - [ http](#http-form-e-query)
+    - [ Request](#request)
+    - [ runat server](#runat-server)
 
+# Cadastro em memória
+# http (.form e .query)
+# Request 
+# runat server
 
 ##  Conceitos Demonstrados
 
@@ -276,3 +284,107 @@ protected void Button1_Click(object sender, EventArgs e)
 ```
 
 Essa abordagem permite uma separação clara de responsabilidades, mantendo a lógica de negócio no *code-behind* e a interface no `.aspx`.
+
+## Cadastro em Memória
+Nesta seção, demonstramos como um cadastro pode ser gerenciado em memória, sem a necessidade de persistir os dados em um banco. Em nosso exemplo, os dados do usuário (nome e telefone) são coletados, encapsulados em um objeto `Usuario` e adicionados a uma lista interna. Essa lista é utilizada para popular um controle do tipo `GridView`, permitindo a visualização dos registros cadastrados durante a execução da aplicação.
+
+Exemplo de código no *code-behind*:
+
+```csharp
+protected void btnSalvar_Click(object sender, EventArgs e)
+{
+    // Cria um novo usuário com os dados dos campos de entrada
+    Usuario usuario = new Usuario();
+    usuario.Nome = txtNome.Text;
+    usuario.Telefone = txtTelefone.Text;
+    usuario.Salvar();
+    
+    // Após salvar, exibe a lista atualizada
+    MostrarLista();
+}
+```
+
+No método `MostrarLista()`, o painel de cadastro é ocultado e o painel de resultado é exibido, vinculando a lista de usuários ao controle `GridView`:
+
+```csharp
+private void MostrarLista()
+{
+    pnlCampoCadastro.Visible = false;
+    pnlResultado.Visible = true;
+
+    gridResultado.DataSource = Usuario.Lista;
+    gridResultado.DataBind();
+}
+```
+
+---
+
+## http (.form e .query)
+
+Em aplicações ASP.NET WebForms, o envio dos dados para o servidor ocorre através do elemento `<form>`. Ao incluir o atributo `runat="server"` no `<form>`, o ASP.NET gerencia automaticamente os dados submetidos tanto via *form* quanto via *query string*.
+
+No exemplo, o formulário é definido assim:
+
+```aspx
+<form id="form1" runat="server">
+    <div>
+        <!-- Painel para cadastro -->
+        <asp:Panel ID="pnlCampoCadastro" runat="server">
+            <asp:Label ID="lblNome" runat="server" Text="Nome: "></asp:Label>
+            <asp:TextBox ID="txtNome" runat="server" ></asp:TextBox>
+            <br />
+            <asp:Label ID="lblTelefone" runat="server" Text="Telefone"></asp:Label>
+            <asp:TextBox ID="txtTelefone" runat="server"></asp:TextBox>
+            <br /><br />
+            <asp:Button ID="btnSalvar" runat="server" Text="Salvar" OnClick="btnSalvar_Click" />
+        </asp:Panel>
+    </div>
+    <asp:Panel ID="pnlResultado" runat="server">
+        <asp:Button ID="btnIrCadastro" runat="server" Text="Novo Cadastro" OnClick="btnIrCadastro_Click" />
+        <asp:GridView ID="gridResultado" runat="server">
+        </asp:GridView>
+    </asp:Panel>
+</form>
+```
+
+O formulário envia os dados dos controles que possuem o atributo `runat="server"`, permitindo que estes sejam manipulados diretamente no *code-behind*.
+
+---
+
+## Request
+
+O objeto `Request` é utilizado para capturar os dados enviados pelo cliente, seja através de formulários (*form*) ou pela *query string*. Em WebForms, apesar de termos controles que já vinculam seus valores automaticamente, é possível acessar dados enviados diretamente via `Request["nomeCampo"]`.
+
+Embora no exemplo fornecido os dados sejam manipulados via controles ASP.NET, a lógica do `Request` é importante quando se trabalha com elementos HTML puros ou precisa processar dados de forma personalizada.
+
+Exemplo (em cenários onde você utiliza elementos HTML sem o processamento automático):
+
+```csharp
+// Exemplo de como acessar um dado enviado via Request
+string telefone = Request["telefone"];
+Response.Write("Telefone: " + telefone);
+```
+
+Nesse cenário, mesmo que o campo esteja declarado com `runat="server"`, o uso do `Request` pode ser útil para manipulações específicas ou para acessar valores enviados via query string.
+
+---
+
+## runat server
+
+O atributo `runat="server"` é essencial no ASP.NET WebForms para que os elementos HTML e controles ASP.NET sejam processados pelo servidor. Ao definir esse atributo:
+
+- **Controles ASP.NET:** Já vêm preparados com esse atributo e permitem a manipulação direta no *code-behind*. Exemplos: `<asp:TextBox>`, `<asp:Button>`, `<asp:GridView>`.
+  
+- **Elementos HTML puros:** Precisam do atributo `runat="server"` para que se tornem acessíveis no servidor. Sem ele, os dados desses elementos não são automaticamente processados pelo framework e só podem ser acessados via `Request`.
+
+Exemplo de declaração:
+
+```aspx
+<asp:Panel ID="pnlCampoCadastro" runat="server">
+    <asp:Label ID="lblNome" runat="server" Text="Nome: "></asp:Label>
+    <asp:TextBox ID="txtNome" runat="server" ></asp:TextBox>
+</asp:Panel>
+```
+
+Essa integração entre a camada de apresentação e o *code-behind* permite que a lógica de negócio seja implementada em C# enquanto a interface é definida em HTML/ASP.NET, promovendo uma separação clara das responsabilidades.
+
